@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Braille and Math Speech Tests 0001b (revised by removing named entities) with MathCAT 0.1.23</title>
+        <style>
+            /*Custom Fonts*/
+            @font-face {
+                font-family: 'Sim Braille';
+                src: url('fonts/simbraille-webfont.woff2') format('woff2'),
+                    url('fonts/simbbraille-webfont.woff') format('woff');
+                font-weight: normal;
+                font-style: normal;
+            }
+
+            html, body {
+                background-color: #1e1e1e;
+                color: #d4d4d4;
+            }
+            body {
+                margin: 0;
+            }
+            fieldset {
+                margin: 0.5rem;
+                padding: 0.5rem;
+            }
+            div.exampleContainer {
+                border: thin dashed gray;
+                margin: 0.5rem;
+                padding: 0.5rem;
+            }
+            h3.example {
+                margin: 0;
+            }
+            div.exampleContainer p {
+                font-family: 'Consolas';
+            }
+
+            div.resultContainer {
+                display: flex;
+                flex-wrap: wrap;
+            }
+            div.outerRenderedMathContainer {
+                flex-grow: 1;
+                width: 33%;
+                margin-right: 0.5rem;
+                min-width: 300px;
+            }
+            div.outerMathSrcContainer {
+                flex-grow: 1;
+                width: 65%;
+            }
+
+            @media only screen and (max-width: 768px) {
+                div.resultContainer {
+                    display: block;
+                }
+                div.outerRenderedMathContainer {
+                    display: block;
+                    width: 95%;
+                }
+                div.outerMathSrcContainer {
+                    display: block;
+                    width: 95%;
+                    margin-top: 1.3rem;
+                }
+            }
+
+
+            div.resultContainer h4 {
+                margin: 0.5rem 0 0.1rem 0;
+            }
+
+            div.renderedMathContainer {
+                padding: 5px;
+                border-radius: 5px;
+                background-color: #d4d4d4;
+                color: black;
+                width: 95%;
+            }
+
+            div.mathSrcContainer pre {
+                margin: 0;
+            }
+            div.speechTextAndBrailleContainer p {
+                margin-top: 0.1rem;
+                margin-left: 0.5rem;
+            }
+            div.speechTextAndBrailleContainer > p.mathCatBraille.braille, div.speechTextAndBrailleContainer > p.sreBraille.braille {
+                overflow-wrap: break-word;
+                font-family: 'Sim Braille', Consolas;
+                font-size: 125%;
+            }
+            .tagName { color: #68AEC5; }
+            .tagChar { color: #969696}
+            .tagValueQuote { color: #d08c0d; }
+            .tagEqSign { color: #c49e57; }
+            .tagAttrName { color: #68CDFE; }
+            .tagAttrValue { color: rgb(255, 115, 0)}
+            .tagText { color: #D4D4D4}
+        </style>
+        <script>
+            (()=>{
+                math=[{"mathML":"<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><msqrt><mn>3</mn><mi>i</mi></msqrt><mo>&#x2212;</mo><mn>2</mn><mi>i</mi></math>","mathSpeak":"StartRoot 3 i EndRoot minus 2 i","sreBraille":"⠜⠒⠊⠻⠤⠆⠊","clearSpeak":"the square root of 3 i; minus 2 i","mathCatBraille":"⠜⠒⠊⠻⠤⠆⠊"},{"mathML":"<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><msqrt><mn>3</mn><mi>i</mi><mo>&#x2212;</mo><mn>2</mn><mi>i</mi></msqrt></math>","mathSpeak":"StartRoot 3 i minus 2 i EndRoot","sreBraille":"⠜⠒⠊⠤⠆⠊⠻","clearSpeak":"the square root of 3 i minus 2 i;","mathCatBraille":"⠜⠒⠊⠤⠆⠊⠻"},{"mathML":"<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mroot><mrow><mn>4</mn><mi>i</mi></mrow><mn>3</mn></mroot><mo>&#x2212;</mo><mn>2</mn><mi>i</mi></math>","mathSpeak":"RootIndex 3 StartRoot 4 i EndRoot minus 2 i","sreBraille":"⠣⠒⠜⠲⠊⠻⠤⠆⠊","clearSpeak":"the cube root of 4 i; minus 2 i","mathCatBraille":"⠣⠒⠜⠲⠊⠻⠤⠆⠊"},{"mathML":"<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mroot><mrow><mn>4</mn><mi>i</mi><mo>&#x2212;</mo><mn>2</mn><mi>i</mi></mrow><mn>3</mn></mroot></math>","mathSpeak":"RootIndex 3 StartRoot 4 i minus 2 i EndRoot","sreBraille":"⠣⠒⠜⠲⠊⠤⠆⠊⠻","clearSpeak":"the cube root of 4 i minus 2 i;","mathCatBraille":"⠣⠒⠜⠲⠊⠤⠆⠊⠻"},{"mathML":"<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mi>sin</mi><mo>&#x2061;</mo><mo stretchy=\"false\">(</mo><mn>3</mn><mi>i</mi><mo stretchy=\"false\">)</mo><mo>&#x2212;</mo><mn>2</mn><mi>i</mi></math>","mathSpeak":"sine left parenthesis 3 i right parenthesis minus 2 i","sreBraille":"⠎⠊⠝⠀⠷⠒⠊⠾⠤⠆⠊","clearSpeak":"sine of 3 i, minus 2 i","mathCatBraille":"⠎⠊⠝⠀⠷⠒⠊⠾⠤⠆⠊"},{"mathML":"<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mi>sin</mi><mo>&#x2061;</mo><mo stretchy=\"false\">(</mo><mn>3</mn><mi>i</mi><mo>&#x2212;</mo><mn>2</mn><mi>i</mi><mo stretchy=\"false\">)</mo></math>","mathSpeak":"sine left parenthesis 3 i minus 2 i right parenthesis","sreBraille":"⠎⠊⠝⠀⠷⠒⠊⠤⠆⠊⠾","clearSpeak":"sine of, open paren, 3 i minus 2 i, close paren","mathCatBraille":"⠎⠊⠝⠀⠷⠒⠊⠤⠆⠊⠾"},{"mathML":"<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><msub><mi>n</mi><mrow><mi>k</mi><mo>&#x2212;</mo><mn>1</mn><mo>&#x2212;</mo><mi>b</mi></mrow></msub></math>","mathSpeak":"n Subscript k minus 1 minus b","sreBraille":"⠝⠰⠅⠤⠂⠤⠃","clearSpeak":"n sub k minus 1 minus b end sub,","mathCatBraille":"⠝⠰⠅⠤⠂⠤⠃"},{"mathML":"<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><msub><mi>n</mi><mrow><mi>k</mi><mo>&#x2212;</mo><mn>1</mn></mrow></msub><mo>&#x2212;</mo><mi>b</mi></math>","mathSpeak":"n Subscript k minus 1 Baseline minus b","sreBraille":"⠝⠰⠅⠤⠂⠐⠤⠃","clearSpeak":"n sub k minus 1 end sub; minus b","mathCatBraille":"⠝⠰⠅⠤⠂⠐⠤⠃"},{"mathML":"<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><msup><mi>n</mi><mrow><mi>n</mi><mo>&#x2212;</mo><mn>1</mn></mrow></msup></math>","mathSpeak":"n Superscript n minus 1","sreBraille":"⠝⠘⠝⠤⠂","clearSpeak":"n raised to the n minus 1 power","mathCatBraille":"⠝⠘⠝⠤⠂"},{"mathML":"<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><msup><mi>n</mi><mrow><mi>n</mi></mrow></msup><mo>&#x2212;</mo><mn>1</mn></math>","mathSpeak":"n Superscript n Baseline minus 1","sreBraille":"⠝⠘⠝⠐⠤⠂","clearSpeak":"n to the n-th power, minus 1","mathCatBraille":"⠝⠘⠝⠐⠤⠂"},{"mathML":"<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><msubsup><mi>n</mi><mrow><mi>k</mi><mo>&#x2212;</mo><mn>1</mn></mrow><mrow><mi>n</mi><mo>&#x2212;</mo><mn>1</mn></mrow></msubsup></math>","mathSpeak":"n Subscript k minus 1 Superscript n minus 1","sreBraille":"⠝⠰⠅⠤⠂⠘⠝⠤⠂","clearSpeak":"msub of, n comma k minus 1 raised to the n minus 1 power","mathCatBraille":"⠝⠰⠅⠤⠂⠘⠝⠤⠂"},{"mathML":"<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><msubsup><mi>n</mi><mrow><mi>k</mi><mo>&#x2212;</mo><mn>1</mn></mrow><mrow><mi>n</mi></mrow></msubsup><mo>&#x2212;</mo><mn>1</mn></math>","mathSpeak":"n Subscript k minus 1 Superscript n Baseline minus 1","sreBraille":"⠝⠰⠅⠤⠂⠘⠝⠐⠤⠂","clearSpeak":"msub of, n comma k minus 1 to the n-th power; minus 1","mathCatBraille":"⠝⠰⠅⠤⠂⠘⠝⠐⠤⠂"},{"mathML":"<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mrow><mo fence=\"true\">(</mo><mi>s</mi><mo>+</mo><mi>t</mi><mo fence=\"true\">)</mo></mrow><mo>&#xF7;</mo><mn>2</mn></mrow></math>","mathSpeak":"left parenthesis s plus t right parenthesis divided by 2","sreBraille":"⠷⠎⠬⠞⠾⠈⠌⠆","clearSpeak":"open paren s plus t close paren; divided by 2","mathCatBraille":"⠷⠎⠬⠞⠾⠨⠌⠆"},{"mathML":"<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mi>s</mi><mo>+</mo><mi>t</mi><mo>&#xF7;</mo><mn>2</mn></mrow></math>","mathSpeak":"s plus t divided by 2","sreBraille":"⠎⠬⠞⠈⠌⠆","clearSpeak":"s plus t divided by 2","mathCatBraille":"⠎⠬⠞⠨⠌⠆"},{"mathML":"<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><msup><mi>x</mi><mrow><mi>n</mi><mo>&#x2212;</mo><mn>1</mn></mrow></msup></math>","mathSpeak":"x Superscript n minus 1","sreBraille":"⠭⠘⠝⠤⠂","clearSpeak":"x raised to the n minus 1 power","mathCatBraille":"⠭⠘⠝⠤⠂"},{"mathML":"<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><msup><mi>x</mi><mrow><mi>n</mi></mrow></msup><mo>&#x2212;</mo><mn>1</mn></math>","mathSpeak":"x Superscript n Baseline minus 1","sreBraille":"⠭⠘⠝⠐⠤⠂","clearSpeak":"x to the n-th power, minus 1","mathCatBraille":"⠭⠘⠝⠐⠤⠂"},{"mathML":"<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mi>x</mi><mo>=</mo><mfrac><mrow><mo>&#x2212;</mo><mi>b</mi><mo>&#x00B1;</mo><msqrt><msup><mi>b</mi><mn>2</mn></msup><mo>&#x2212;</mo><mn>4</mn><mi>a</mi><mi>c</mi></msqrt></mrow><mrow><mn>2</mn><mi>a</mi></mrow></mfrac></math>","mathSpeak":"x equals StartFraction negative b plus or minus StartRoot b squared minus 4 a c EndRoot Over 2 a EndFraction","sreBraille":"⠭⠀⠨⠅⠀⠹⠤⠃⠬⠤⠜⠃⠘⠆⠐⠤⠲⠁⠉⠻⠌⠆⠁⠼","clearSpeak":"x equals; the fraction with numerator; negative b plus or minus; the square root of b squared minus 4 eigh c; and denominator 2 eigh;","mathCatBraille":"⠭⠀⠨⠅⠀⠹⠤⠃⠬⠤⠜⠃⠘⠆⠐⠤⠲⠁⠉⠻⠌⠆⠁⠼"},{"mathML":"<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><msup><mfenced><mrow><mi>a</mi><mo>+</mo><mi>b</mi></mrow></mfenced><mn>2</mn></msup></mrow></math>","mathSpeak":"left parenthesis a plus b right parenthesis squared","sreBraille":"⠷⠁⠬⠃⠾⠘⠆","clearSpeak":"open paren eigh plus b, close paren squared","mathCatBraille":"⠷⠁⠬⠃⠾⠘⠆"},{"mathML":"<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mi>x</mi><mo>=</mo><mfrac><mrow><mrow><mo>-</mo><mi>b</mi></mrow><mo>&#xB1;<!--PlusMinus--></mo><msqrt><mrow><msup><mi>b</mi><mn>2</mn></msup><mo>-</mo><mrow><mn>4</mn><mo>&#x2062;<!--InvisibleTimes--></mo><mi>a</mi><mo>&#x2062;<!--InvisibleTimes--></mo><mi>c</mi></mrow></mrow></msqrt></mrow><mrow><mn>2</mn><mo>&#x2062;<!--InvisibleTimes--></mo><mi>a</mi></mrow></mfrac></mrow></math>","mathSpeak":"x equals StartFraction negative b plus or minus StartRoot b squared minus 4 a c EndRoot Over 2 a EndFraction","sreBraille":"⠭⠀⠨⠅⠀⠹⠤⠃⠬⠤⠜⠃⠘⠆⠐⠤⠲⠁⠉⠻⠌⠆⠁⠼","clearSpeak":"x equals; the fraction with numerator; negative b plus or minus; the square root of b squared minus 4 eigh c; and denominator 2 eigh;","mathCatBraille":"⠭⠀⠨⠅⠀⠹⠤⠃⠬⠤⠜⠃⠘⠆⠐⠤⠲⠁⠉⠻⠌⠆⠁⠼"},{"mathML":"<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mrow><msup><mi>x</mi><mn>2</mn></msup><mo>+</mo><mrow><mn>4</mn><mo>&#x2062;<!--InvisibleTimes--></mo><mi>x</mi></mrow><mo>+</mo><mn>4</mn></mrow><mo>=</mo><mn>0</mn></mrow></math>","mathSpeak":"x squared plus 4 x plus 4 equals 0","sreBraille":"⠭⠘⠆⠐⠬⠲⠭⠬⠲⠀⠨⠅⠀⠼⠴","clearSpeak":"x squared plus 4 x plus 4; equals 0","mathCatBraille":"⠭⠘⠆⠐⠬⠲⠭⠬⠲⠀⠨⠅⠀⠼⠴"},{"mathML":"<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mi>z</mi><mfenced><mrow><mi>x</mi><mo>+</mo><mi>y</mi></mrow></mfenced></mrow></math>","mathSpeak":"z left parenthesis x plus y right parenthesis","sreBraille":"⠵⠷⠭⠬⠽⠾","clearSpeak":"z, open paren x plus y close paren","mathCatBraille":"⠵⠷⠭⠬⠽⠾"},{"mathML":"<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mi>A</mi><mo>=</mo><mfenced open=\"[\" close=\"]\"><mtable><mtr><mtd><mi>x</mi></mtd><mtd><mi>y</mi></mtd></mtr><mtr><mtd><mi>z</mi></mtd><mtd><mi>w</mi></mtd></mtr></mtable></mfenced></mrow></math>","mathSpeak":"upper A equals Start 2 By 2 Matrix 1st Row 1st Column x 2nd Column y 2nd Row 1st Column z 2nd Column w EndMatrix","sreBraille":"⠠⠁⠀⠨⠅⠀⠈⠠⠷⠭⠀⠽⠈⠠⠾⠀⠈⠠⠷⠵⠀⠺⠈⠠⠾","clearSpeak":"cap eigh equals, the 2 by 2 matrix; row 1; x, y; row 2; z, w;","mathCatBraille":"⠠⠁⠀⠨⠅⠀⠈⠠⠈⠷⠭⠀⠽⠈⠠⠈⠾⠀⠈⠠⠈⠷⠵⠀⠺⠈⠠⠈⠾"},{"mathML":"<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><apply><eq/><ci>A</ci><matrix><matrixrow><ci>x</ci><ci>y</ci></matrixrow><matrixrow><ci>z</ci><ci>w</ci></matrixrow></matrix></apply></mrow></math>","mathSpeak":"Axyzw","sreBraille":"⠠⠁⠭⠽⠵⠺","clearSpeak":"ERROR","mathCatBraille":"ERROR"},{"mathML":"<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mi> x </mi><mo> + </mo><mrow><mi> a </mi><mo> / </mo><mi> b </mi></mrow></mrow></math>","mathSpeak":"x plus a divided by b","sreBraille":"⠭⠬⠁⠸⠌⠃","clearSpeak":"x plus eigh divided by b","mathCatBraille":"⠭⠬⠁⠸⠌⠃"},{"mathML":"<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><msqrt><mo> - </mo><mn> 1 </mn></msqrt></math>","mathSpeak":"StartRoot negative 1 EndRoot","sreBraille":"⠜⠤⠂⠻","clearSpeak":"the square root of negative 1,","mathCatBraille":"⠜⠤⠂⠻"},{"mathML":"<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><msqrt><mrow><mo> - </mo><mn> 1 </mn></mrow></msqrt></math>","mathSpeak":"StartRoot negative 1 EndRoot","sreBraille":"⠜⠤⠂⠻","clearSpeak":"the square root of negative 1,","mathCatBraille":"⠜⠤⠂⠻"},{"mathML":"<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mi> sin </mi><mo> &#x2061;<!--ApplyFunction--> </mo><mi> x </mi></mrow></math>","mathSpeak":"sine x","sreBraille":"⠎⠊⠝⠀⠭","clearSpeak":"sine of x","mathCatBraille":"⠎⠊⠝⠀⠭"},{"mathML":"<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mn> 1 </mn><mo> + </mo><mi> ... </mi><mo> + </mo><mi> n </mi></mrow></math>","mathSpeak":"1 plus period period period plus n","sreBraille":"⠼⠂⠬⠨⠨⠨⠬⠝","clearSpeak":"1 plus ... plus n","mathCatBraille":"⠼⠂⠬⠸⠲⠸⠲⠸⠲⠬⠝"},{"mathML":"<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mn> 2 </mn><mo> + </mo><mrow><mn> 3 </mn><mo> &#x2062;<!--InvisibleTimes--> </mo><mi> &#x2148;<!--ImaginaryI--> </mi></mrow></mrow></math>","mathSpeak":"2 plus 3 double struck italic i","sreBraille":"⠼⠆⠬⠒⠸⠨","clearSpeak":"2 plus 3 double-struck italic I","mathCatBraille":"⠼⠆⠬⠒ⅈ"},{"mathML":"<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mo> ( </mo><mrow><mi> a </mi><mo> + </mo><mi> b </mi></mrow><mo> ) </mo></mrow></math>","mathSpeak":"left parenthesis a plus b right parenthesis","sreBraille":"⠷⠁⠬⠃⠾","clearSpeak":"open paren eigh plus b, close paren","mathCatBraille":"⠷⠁⠬⠃⠾"},{"mathML":"<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mo> [ </mo><mrow><mn> 0 </mn><mo> , </mo><mn> 1 </mn></mrow><mo> ) </mo></mrow></math>","mathSpeak":"left bracket 0 comma 1 right parenthesis","sreBraille":"⠈⠷⠴⠠⠀⠂⠾","clearSpeak":"open bracket 0 comma 1 close paren","mathCatBraille":"⠈⠷⠴⠠⠀⠂⠾"},{"mathML":"<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mi> f </mi><mo> &#x2061;<!--ApplyFunction--> </mo><mrow><mo> ( </mo><mrow><mi> x </mi><mo> , </mo><mi> y </mi></mrow><mo> ) </mo></mrow></mrow></math>","mathSpeak":"f left parenthesis x comma y right parenthesis","sreBraille":"⠋⠷⠭⠠⠀⠽⠾","clearSpeak":"f of, open paren x comma y close paren","mathCatBraille":"⠋⠷⠭⠠⠀⠽⠾"},{"mathML":"<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mi> x </mi><mo> &#x2062;<!--InvisibleTimes--> </mo><mi> y </mi></mrow></math>","mathSpeak":"x y","sreBraille":"⠭⠽","clearSpeak":"x y","mathCatBraille":"⠭⠽"},{"mathML":"<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mi> f </mi><mo> &#x2061;<!--ApplyFunction--> </mo><mrow><mo> ( </mo><mi> x </mi><mo> ) </mo></mrow></mrow></math>","mathSpeak":"f left parenthesis x right parenthesis","sreBraille":"⠋⠷⠭⠾","clearSpeak":"f of x","mathCatBraille":"⠋⠷⠭⠾"},{"mathML":"<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mi> sin </mi><mo> &#x2061;<!--ApplyFunction--> </mo><mi> x </mi></mrow></math>","mathSpeak":"sine x","sreBraille":"⠎⠊⠝⠀⠭","clearSpeak":"sine of x","mathCatBraille":"⠎⠊⠝⠀⠭"},{"mathML":"<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><msub><mi> m </mi><mrow><mn> 1 </mn><mo> &#x2063;<!--InvisibleComma--> </mo><mn> 2 </mn></mrow></msub></math>","mathSpeak":"m Subscript 1 comma 2","sreBraille":"⠍⠰⠼⠂⠠⠀⠼⠆","clearSpeak":"m sub 1 2","mathCatBraille":"⠍⠰⠂⠪⠆"},{"mathML":"<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mfrac><mo> &#x2146;<!--DifferentialD--> </mo><mrow><mo> &#x2146;<!--DifferentialD--> </mo><mi> x </mi></mrow></mfrac></math>","mathSpeak":"StartFraction double struck italic d Over double struck italic d x EndFraction","sreBraille":"⠹⠸⠨⠙⠌⠸⠨⠙⠭⠼","clearSpeak":"the fraction with numerator; double-struck italic D; and denominator double-struck italic D x;","mathCatBraille":"⠹⠙⠌⠙⠭⠼"},{"mathML":"<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><munder><mo> ( </mo><mo> _ </mo></munder><mfrac><mi> a </mi><mi> b </mi></mfrac><mover><mo> ) </mo><mo> &#x203E;<!--OverBar--> </mo></mover></mrow></math>","mathSpeak":"ModifyingBelow left parenthesis With bar StartFraction a Over b EndFraction ModifyingAbove right parenthesis With bar","sreBraille":"⠐⠷⠩⠱⠻⠹⠁⠌⠃⠼⠐⠾⠣⠱⠻","clearSpeak":"modified open paren with ¯ below, eigh over b, modified close paren with ‾ above","mathCatBraille":"⠷⠩⠱⠹⠁⠌⠃⠼⠐⠾⠣⠱⠻"},{"mathML":"<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mo maxsize=\"1\"> ( </mo><mfrac><mi> a </mi><mi> b </mi></mfrac><mo maxsize=\"1\"> ) </mo></mrow></math>","mathSpeak":"left parenthesis StartFraction a Over b EndFraction right parenthesis","sreBraille":"⠷⠹⠁⠌⠃⠼⠾","clearSpeak":"open paren eigh over b close paren","mathCatBraille":"⠷⠹⠁⠌⠃⠼⠾"},{"mathML":"<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mi> x </mi><munder><mo> &#x2192;<!--RightArrow--> </mo><mtext> maps to </mtext></munder><mi> y </mi></mrow></math>","mathSpeak":"x right arrow Underscript maps to Endscripts y","sreBraille":"⠭⠀⠐⠫⠒⠒⠕⠩⠍⠁⠏⠎⠀⠞⠕⠻⠀⠽","clearSpeak":"x modified right arrow with maps to below y","mathCatBraille":"⠭⠐⠫⠒⠒⠕⠩⠍⠁⠏⠎⠀⠞⠕⠻⠽"},{"mathML":"<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mo> there exists </mo><mrow><mrow><mi> &#x3B4;<!--delta--> </mi><mo> &gt; </mo><mn> 0 </mn></mrow><mo> such that </mo><mrow><mrow><mi> f </mi><mo> &#x2061;<!--ApplyFunction--> </mo><mrow><mo> ( </mo><mi> x </mi><mo> ) </mo></mrow></mrow><mo> &lt; </mo><mn> 1 </mn></mrow></mrow></mrow></math>","mathSpeak":"there exists delta greater than 0 such that f left parenthesis x right parenthesis less than 1","sreBraille":"⠞⠓⠑⠗⠑⠀⠑⠭⠊⠎⠞⠎⠨⠙⠀⠨⠂⠀⠼⠴⠎⠥⠉⠓⠀⠞⠓⠁⠞⠋⠷⠭⠾⠀⠐⠅⠀⠼⠂","clearSpeak":"there exists; delta is greater than 0, such that, f of x is less than 1","mathCatBraille":"⠞⠓⠑⠗⠑⠀⠑⠭⠊⠎⠞⠎⠨⠙⠀⠨⠂⠀⠼⠴⠎⠥⠉⠓⠀⠞⠓⠁⠞⠋⠷⠭⠾⠀⠐⠅⠀⠼⠂"},{"mathML":"<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><msup><mrow><mi> x </mi><malignmark edge=\"right\"/></mrow><mn> 2 </mn></msup></math>","mathSpeak":"x squared","sreBraille":"⠭⠘⠆","clearSpeak":"x squared","mathCatBraille":"⠭⠘⠆"},{"mathML":"<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mi><mglyph fontfamily=\"my-braid-font\" index=\"2\" alt=\"23braid\"/></mi><mo>+</mo><mi><mglyph fontfamily=\"my-braid-font\" index=\"5\" alt=\"132braid\"/></mi><mo>=</mo><mi><mglyph fontfamily=\"my-braid-font\" index=\"3\" alt=\"13braid\"/></mi></mrow></math>","mathSpeak":"23braid plus 132braid equals 13braid","sreBraille":"","clearSpeak":"ERROR","mathCatBraille":"ERROR"},{"mathML":"<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mrow><mn> 2 </mn><mo> &#x2062;<!--InvisibleTimes--> </mo><mi> x </mi></mrow><mo> + </mo><mi> y </mi><mo> - </mo><mi> z </mi></mrow></math>","mathSpeak":"2 x plus y minus z","sreBraille":"⠼⠆⠭⠬⠽⠤⠵","clearSpeak":"2 x plus y minus z","mathCatBraille":"⠼⠆⠭⠬⠽⠤⠵"},{"mathML":"<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mo> ( </mo><mrow><mi> x </mi><mo> , </mo><mi> y </mi></mrow><mo> ) </mo></mrow></math>","mathSpeak":"left parenthesis x comma y right parenthesis","sreBraille":"⠷⠭⠠⠀⠽⠾","clearSpeak":"open paren x comma y close paren","mathCatBraille":"⠷⠭⠠⠀⠽⠾"},{"mathML":"<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mo> ( </mo><mfrac linethickness=\"0\"><mi> a </mi><mi> b </mi></mfrac><mo> ) </mo></mrow></math>","mathSpeak":"StartBinomialOrMatrix a Choose b EndBinomialOrMatrix","sreBraille":"⠠⠷⠁⠠⠾⠀⠠⠷⠃⠠⠾","clearSpeak":"eigh choose b","mathCatBraille":"⠷⠁⠩⠃⠾"},{"mathML":"<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mfrac linethickness=\"2\"><mfrac><mi> a </mi><mi> b </mi></mfrac><mfrac><mi> c </mi><mi> d </mi></mfrac></mfrac></math>","mathSpeak":"StartStartFraction StartFraction a Over b EndFraction OverOver StartFraction c Over d EndFraction EndEndFraction","sreBraille":"⠠⠹⠹⠁⠌⠃⠼⠠⠌⠹⠉⠌⠙⠼⠠⠼","clearSpeak":"the fraction with numerator; eigh over b; and denominator c over d;","mathCatBraille":"⠠⠹⠹⠁⠌⠃⠼⠠⠌⠹⠉⠌⠙⠼⠠⠼"},{"mathML":"<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mfrac><mn> 1 </mn><mrow><msup><mi> x </mi><mn> 3 </mn></msup><mo> + </mo><mfrac><mi> x </mi><mn> 3 </mn></mfrac></mrow></mfrac><mo> = </mo><mfrac bevelled=\"true\"><mn> 1 </mn><mrow><msup><mi> x </mi><mn> 3 </mn></msup><mo> + </mo><mfrac><mi> x </mi><mn> 3 </mn></mfrac></mrow></mfrac></math>","mathSpeak":"StartStartFraction 1 OverOver x cubed plus StartFraction x Over 3 EndFraction EndEndFraction equals StartStartFraction 1 OverOver x cubed plus StartFraction x Over 3 EndFraction EndEndFraction","sreBraille":"⠠⠹⠂⠠⠌⠭⠘⠒⠐⠬⠹⠭⠌⠒⠼⠠⠼⠀⠨⠅⠀⠠⠹⠂⠠⠸⠌⠭⠘⠒⠐⠬⠹⠭⠌⠒⠼⠠⠼","clearSpeak":"the fraction with numerator 1; and denominator x cubed plus x over 3; equals; the fraction with numerator 1; and denominator x cubed plus x over 3;","mathCatBraille":"⠠⠹⠂⠠⠌⠭⠘⠒⠐⠬⠹⠭⠌⠒⠼⠠⠼⠀⠨⠅⠀⠠⠹⠂⠠⠸⠌⠭⠘⠒⠐⠬⠹⠭⠌⠒⠼⠠⠼"},{"mathML":"<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mfrac><mrow><mn> 1 </mn><mo> + </mo><msqrt><mn> 5 </mn></msqrt></mrow><mn> 2 </mn></mfrac></math>","mathSpeak":"StartFraction 1 plus StartRoot 5 EndRoot Over 2 EndFraction","sreBraille":"⠹⠂⠬⠜⠢⠻⠌⠆⠼","clearSpeak":"the fraction with numerator; 1 plus the square root of 5; and denominator 2;","mathCatBraille":"⠹⠂⠬⠜⠢⠻⠌⠆⠼"},{"mathML":"<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mstyle maxsize=\"1\"><mrow><mo> ( </mo><mfrac><mi> a </mi><mi> b </mi></mfrac><mo> ) </mo></mrow></mstyle></math>","mathSpeak":"left parenthesis StartFraction a Over b EndFraction right parenthesis","sreBraille":"⠷⠹⠁⠌⠃⠼⠾","clearSpeak":"open paren eigh over b close paren","mathCatBraille":"⠷⠹⠁⠌⠃⠼⠾"},{"mathML":"<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mfrac><mrow><mi> x </mi><mo> + </mo><mi> y </mi><mo> + </mo><mi> z </mi></mrow><mrow><mi> x </mi><mphantom><mo form=\"infix\"> + </mo><mi> y </mi></mphantom><mo> + </mo><mi> z </mi></mrow></mfrac></math>","mathSpeak":"StartFraction x plus y plus z Over x plus z EndFraction","sreBraille":"⠹⠭⠬⠽⠬⠵⠌⠭⠬⠵⠼","clearSpeak":"the fraction with numerator; x plus y plus z; and denominator x plus z;","mathCatBraille":"⠹⠭⠬⠽⠬⠵⠌⠭⠬⠵⠼"},{"mathML":"<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mfrac><mrow><mi> x </mi><mo> + </mo><mi> y </mi><mo> + </mo><mi> z </mi></mrow><mrow><mi> x </mi><mphantom><mo> + </mo></mphantom><mphantom><mi> y </mi></mphantom><mo> + </mo><mi> z </mi></mrow></mfrac></math>","mathSpeak":"StartFraction x plus y plus z Over x plus z EndFraction","sreBraille":"⠹⠭⠬⠽⠬⠵⠌⠭⠬⠵⠼","clearSpeak":"the fraction with numerator; x plus y plus z; and denominator x plus z;","mathCatBraille":"⠹⠭⠬⠽⠬⠵⠌⠭⠬⠵⠼"},{"mathML":"<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mtable columnspacing=\"0pt\" rowspacing=\"0pt\"><mtr><mtd></mtd><mtd columnalign=\"right\"><mn>10</mn></mtd></mtr><mtr><mtd columnalign=\"right\"><mn>131</mn></mtd><mtd columnalign=\"right\"><menclose notation=\"longdiv\"><mn>1413</mn></menclose></mtd></mtr><mtr><mtd></mtd><mtd columnalign=\"right\"><mrow><munder><mn>131</mn><mo> _ </mo></munder><mphantom><mn>3</mn></mphantom></mrow></mtd></mtr><mtr><mtd></mtd><mtd columnalign=\"right\"><mn>103</mn></mtd></mtr></mtable></math>","mathSpeak":"StartLayout 1st Row 1st Column Blank 2nd Column 10 2nd Row 1st Column 131 2nd Column StartEnclose long division 1413 EndEnclose 3rd Row 1st Column Blank 2nd Column ModifyingBelow 131 With bar 4th Row 1st Column Blank 2nd Column 103 EndLayout","sreBraille":"⠀⠀⠼⠂⠴⠀⠼⠂⠒⠂⠀⠫long division⠸⠫⠼⠂⠲⠂⠒⠻⠀⠀⠀⠐⠼⠂⠒⠂⠩⠱⠻⠀⠀⠀⠼⠂⠴⠒","clearSpeak":"4 lines, line 1; 10; line 2; 131, long division symbol, enclosing 1413 end enclosure,; line 3; 131 with ¯ below; line 4; 103;","mathCatBraille":"⠈⠠⠀⠼⠂⠴⠈⠠⠀⠈⠠⠂⠒⠂⠀⠼⠂⠲⠂⠒⠈⠠⠀⠈⠠⠀⠐⠂⠒⠂⠩⠱⠻⠈⠠⠀⠈⠠⠀⠼⠂⠴⠒⠈⠠"},{"mathML":"<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><msub><mi>a</mi><mrow><menclose notation=\"actuarial\"><mi>n</mi></menclose><mo>&#x2062;<!--it--></mo><mi>i</mi></mrow></msub></math>","mathSpeak":"a Subscript StartEnclose actuarial symbol n EndEnclose i","sreBraille":"⠁⠰⠫actuarial symbol⠸⠫⠝⠻⠊","clearSpeak":"eigh sub actuarial symbol, enclosing n end enclosure; i end sub,","mathCatBraille":"⠁⠰⠝⠊"},{"mathML":"<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><msup><mrow><mo> ( </mo><mrow><mi> x </mi><mo> + </mo><mi> y </mi></mrow><mo> ) </mo></mrow><mn> 2 </mn></msup></math>","mathSpeak":"left parenthesis x plus y right parenthesis squared","sreBraille":"⠷⠭⠬⠽⠾⠘⠆","clearSpeak":"open paren x plus y close paren squared","mathCatBraille":"⠷⠭⠬⠽⠾⠘⠆"},{"mathML":"<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><msubsup><mo> &#x222B;<!--int--> </mo><mn> 0 </mn><mn> 1 </mn></msubsup><mrow><msup><mi> &#x2147;<!--ExponentialE--> </mi><mi> x </mi></msup><mo> &#x2062;<!--InvisibleTimes--> </mo><mrow><mo> &#x2146;<!--DifferentialD--> </mo><mi> x </mi></mrow></mrow></mrow></math>","mathSpeak":"integral Subscript 0 Superscript 1 Baseline double struck italic e Superscript x Baseline double struck italic d x","sreBraille":"⠮⠰⠴⠘⠂⠐⠸⠨⠑⠘⠭⠐⠸⠨⠙⠭","clearSpeak":"the integral from 0 to 1 of; double-struck italic E to the x-th power; double-struck italic D x","mathCatBraille":"⠮⠰⠴⠘⠂⠐⠑⠘⠭⠐⠙⠭"},{"mathML":"<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><munder accentunder=\"true\"><mrow><mi> x </mi><mo> + </mo><mi> y </mi><mo> + </mo><mi> z </mi></mrow><mo> &#x23DF;<!--UnderBrace--> </mo></munder><mtext>&nbsp;versus&nbsp;</mtext><munder accentunder=\"false\"><mrow><mi> x </mi><mo> + </mo><mi> y </mi><mo> + </mo><mi> z </mi></mrow><mo> &#x23DF;<!--UnderBrace--> </mo></munder></mrow></math>","mathSpeak":"ModifyingBelow x plus y plus z With bottom brace versus ModifyingBelow x plus y plus z With bottom brace","sreBraille":"⠐⠭⠬⠽⠬⠵⠩⠣⠨⠾⠻⠀⠧⠑⠗⠎⠥⠎⠀⠐⠭⠬⠽⠬⠵⠩⠣⠨⠾⠻","clearSpeak":"modified x plus y plus z with ⏟ below;  versus , modified x plus y plus z with ⏟ below","mathCatBraille":"⠐⠭⠬⠽⠬⠵⠩⠣⠨⠾⠻⠀⠧⠑⠗⠎⠥⠎⠀⠐⠭⠬⠽⠬⠵⠩⠣⠨⠾⠻"},{"mathML":"<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mover accent=\"true\"><mi> x </mi><mo> ^ </mo></mover><mtext>&nbsp;versus&nbsp;</mtext><mover accent=\"false\"><mi> x </mi><mo> ^ </mo></mover></mrow></math>","mathSpeak":"ModifyingAbove x With caret versus ModifyingAbove x With caret","sreBraille":"⠐⠭⠣⠸⠣⠻⠀⠧⠑⠗⠎⠥⠎⠀⠐⠭⠣⠸⠣⠻","clearSpeak":"x hat,  versus  x hat,","mathCatBraille":"⠐⠭⠣⠸⠣⠻⠀⠧⠑⠗⠎⠥⠎⠀⠐⠭⠣⠸⠣⠻"},{"mathML":"<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mover accent=\"true\"><mrow><mi> x </mi><mo> + </mo><mi> y </mi><mo> + </mo><mi> z </mi></mrow><mo> &#x23DE;<!--OverBrace--> </mo></mover><mtext>&nbsp;versus&nbsp;</mtext><mover accent=\"false\"><mrow><mi> x </mi><mo> + </mo><mi> y </mi><mo> + </mo><mi> z </mi></mrow><mo> &#x23DE;<!--OverBrace--> </mo></mover></mrow></math>","mathSpeak":"ModifyingAbove x plus y plus z With top brace versus ModifyingAbove x plus y plus z With top brace","sreBraille":"⠐⠭⠬⠽⠬⠵⠣⠣⠨⠷⠻⠀⠧⠑⠗⠎⠥⠎⠀⠐⠭⠬⠽⠬⠵⠣⠣⠨⠷⠻","clearSpeak":"modified x plus y plus z with ⏞ above;  versus , modified x plus y plus z with ⏞ above","mathCatBraille":"⠐⠭⠬⠽⠬⠵⠣⠣⠨⠷⠻⠀⠧⠑⠗⠎⠥⠎⠀⠐⠭⠬⠽⠬⠵⠣⠣⠨⠷⠻"},{"mathML":"<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mmultiscripts><mi> F </mi><mn> 1 </mn><none/><mprescripts/><mn> 0 </mn><none/></mmultiscripts><mo> &#x2061;<!--ApplyFunction--> </mo><mrow><mo> ( </mo><mrow><mo> ; </mo><mi> a </mi><mo> ; </mo><mi> z </mi></mrow><mo> ) </mo></mrow></mrow></math>","mathSpeak":"Subscript 0 Baseline upper F Subscript 1 Baseline left parenthesis semicolon a semicolon z right parenthesis","sreBraille":"⠰⠴⠐⠠⠋⠰⠂⠐⠷⠆⠀⠁⠆⠀⠵⠾","clearSpeak":"cap f with pre-subscript 0 with 1.5 postscripts, 1 none mprescripts of, open paren, semicolon eigh semicolon z, close paren","mathCatBraille":"⠰⠴⠐⠠⠋⠰⠂⠐⠷⠸⠆⠁⠸⠆⠵⠾"},{"mathML":"<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mmultiscripts><mi> R </mi><mi> i </mi><none/><none/><mi> j </mi><mi> k </mi><none/><mi> l </mi><none/></mmultiscripts></math>","mathSpeak":"upper R Subscript i k l Superscript j","sreBraille":"⠠⠗⠰⠊⠅⠇⠘⠚","clearSpeak":"cap r with 4 postscripts, i none none j k none l none","mathCatBraille":"⠠⠗⠰⠊"},{"mathML":"<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mo> ( </mo><mtable><mtr><mtd><mn>1</mn></mtd><mtd><mn>0</mn></mtd><mtd><mn>0</mn></mtd></mtr><mtr><mtd><mn>0</mn></mtd><mtd><mn>1</mn></mtd><mtd><mn>0</mn></mtd></mtr><mtr><mtd><mn>0</mn></mtd><mtd><mn>0</mn></mtd><mtd><mn>1</mn></mtd></mtr></mtable><mo> ) </mo></mrow></math>","mathSpeak":"Start 3 By 3 Matrix 1st Row 1st Column 1 2nd Column 0 3rd Column 0 2nd Row 1st Column 0 2nd Column 1 3rd Column 0 3rd Row 1st Column 0 2nd Column 0 3rd Column 1 EndMatrix","sreBraille":"⠠⠷⠼⠂⠀⠼⠴⠀⠼⠴⠠⠾⠀⠠⠷⠼⠴⠀⠼⠂⠀⠼⠴⠠⠾⠀⠠⠷⠼⠴⠀⠼⠴⠀⠼⠂⠠⠾","clearSpeak":"the 3 by 3 matrix; row 1; 1, 0, 0; row 2; 0, 1, 0; row 3; 0, 0, 1;","mathCatBraille":"⠈⠠⠷⠂⠀⠼⠴⠀⠼⠴⠈⠠⠾⠀⠈⠠⠷⠴⠀⠼⠂⠀⠼⠴⠈⠠⠾⠀⠈⠠⠷⠴⠀⠼⠴⠀⠼⠂⠈⠠⠾"},{"mathML":"<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mtable groupalign=\"{decimalpoint left left decimalpoint left left decimalpoint}\"><mtr><mtd><mrow><mrow><mrow><maligngroup/><mn> 8.44 </mn><mo> &#x2062;<!--InvisibleTimes--> </mo><maligngroup/><mi> x </mi></mrow><maligngroup/><mo> + </mo><mrow><maligngroup/><mn> 55 </mn><mo> &#x2062;<!--InvisibleTimes--> </mo><maligngroup/><mi> y </mi></mrow></mrow><maligngroup/><mo> = </mo><maligngroup/><mn> 0 </mn></mrow></mtd></mtr><mtr><mtd><mrow><mrow><mrow><maligngroup/><mn> 3.1 </mn><mo> &#x2062;<!--InvisibleTimes--> </mo><maligngroup/><mi> x </mi></mrow><maligngroup/><mo> - </mo><mrow><maligngroup/><mn> 0.7 </mn><mo> &#x2062;<!--InvisibleTimes--> </mo><maligngroup/><mi> y </mi></mrow></mrow><maligngroup/><mo> = </mo><maligngroup/><mrow><mo> - </mo><mn> 1.1 </mn></mrow></mrow></mtd></mtr></mtable></math>","mathSpeak":"StartLayout 1st Row  8.44 x plus 55 y equals 0 2nd Row  3.1 x minus 0.7 y equals negative 1.1 EndLayout","sreBraille":"⠼⠦⠨⠲⠲⠭⠬⠢⠢⠽⠀⠨⠅⠀⠼⠴⠀⠼⠒⠨⠂⠭⠤⠴⠨⠶⠽⠀⠨⠅⠀⠤⠼⠂⠨⠂","clearSpeak":"2 lines, line 1; 8.44 x plus 55 y, equals 0; line 2; 3.1 x minus 0.7 y, equals negative 1.1;","mathCatBraille":"⠈⠠⠦⠨⠲⠲⠭⠬⠢⠢⠽⠀⠨⠅⠀⠼⠴⠈⠠⠀⠈⠠⠒⠨⠂⠭⠤⠴⠨⠶⠽⠀⠨⠅⠀⠤⠼⠂⠨⠂⠈⠠"},{"mathML":"<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><msubsup><mo>&#x222B;<!--int--></mo><mn>1</mn><mi>t</mi></msubsup><mfrac><mrow><mo>&#x2146;<!--dd--></mo><mi>x</mi></mrow><mi>x</mi></mfrac></mrow></math>","mathSpeak":"integral Subscript 1 Superscript t Baseline StartFraction double struck italic d x Over x EndFraction","sreBraille":"⠮⠰⠂⠘⠞⠐⠹⠸⠨⠙⠭⠌⠭⠼","clearSpeak":"the integral from 1 to t of; the fraction with numerator; double-struck italic D x; and denominator x;","mathCatBraille":"⠮⠰⠂⠘⠞⠐⠹⠙⠭⠌⠭⠼"},{"mathML":"<math><mrow><msubsup><mo> &#x222B;<!--int--> </mo><mn> 0 </mn><mn> 1 </mn></msubsup><mrow><msup><mi> &#x2147;<!--ExponentialE--> </mi><mi> x </mi></msup><mo> &#x2062;<!--InvisibleTimes--> </mo><mrow><mo> &#x2146;<!--DifferentialD--> </mo><mi> x </mi></mrow></mrow></mrow></math>","mathSpeak":"integral Subscript 0 Superscript 1 Baseline double struck italic e Superscript x Baseline double struck italic d x","sreBraille":"⠮⠰⠴⠘⠂⠐⠸⠨⠑⠘⠭⠐⠸⠨⠙⠭","clearSpeak":"the integral from 0 to 1 of; double-struck italic E to the x-th power; double-struck italic D x","mathCatBraille":"⠮⠰⠴⠘⠂⠐⠑⠘⠭⠐⠙⠭"}]
+                const createElement = (elType, text, attributeValues, config) => {
+                    const el = document.createElement(elType)
+
+                    Object.keys(attributeValues).forEach((attribute) => {
+                    el.setAttribute(attribute, attributeValues[attribute])
+                    })
+
+                    if (text != null && text.length>0) {
+                    if (config != null && config.html===true) {
+                        el.innerHTML = text
+                    } else {
+                        el.appendChild(document.createTextNode(text))
+                    }
+                    }
+                    return el
+                }
+
+                const installMathJax = () => {
+                    const mjScript = document.createElement('script')
+                    mjScript.setAttribute('src','https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js')
+                    mjScript.setAttribute('type','text/javascript')
+                    mjScript.setAttribute('async','')
+                    document.head.appendChild(mjScript)
+                    document.getElementById('loadMathJax').disabled = true
+                    document.getElementById('loadMathJax').setAttribute('aria-disabled','true')
+                    document.getElementById('mjLoaded').appendChild(document.createTextNode(' (MathJax requested. To remove MathJax, reload the page.)'))
+                }
+
+                const formatMathML = (mml) => {
+                    const parser = new DOMParser()
+                    const doc = parser.parseFromString(`<!DOCTYPE math PUBLIC "-//W3C//DTD MathML 2.0//EN" "http://www.w3.org/Math/DTD/mathml2/mathml2.dtd">${mml.replaceAll('&','&amp;').replaceAll('&','&amp;')}`,"text/xml")
+                    let root = null
+                    if(doc===null || doc.documentElement == null || doc.documentElement.innerHTML.includes('<parsererror')) {
+                        let span = document.createElement('span')
+                        span.innerHTML = mml
+                        if(span.children.length===1 && span.firstElementChild.tagName.toLowerCase()==='math') {
+                            root = span.firstElementChild
+                        }
+                    } else {
+                        root = doc.documentElement
+                    }
+                    let formattedMml = '<pre><code>'
+
+                    function formatTag(node) {
+                        let tag = `<span class=\'tagChar\'>&lt;</span><span class=\'tagName\'>${node.nodeName}</span>`
+                        let attrLength = 0
+                        if(node!==null && node.attributes !== null && typeof node.attributes !== 'undefined' && node.attributes.length !== null && typeof node.attributes.length !== 'undefined') {
+                                for(let i=0;i<node.attributes.length;i++) {
+                                let attr = node.attributes[i].name
+                                let value = node.attributes[i].value
+                                if(attrLength>52) {
+                                    attrLength=0
+                                    tag += `<br>${' '.repeat(node.nodeName.length+1)}`
+                                }
+                                if(value !== null) {
+                                    tag += ` <span class=\'tagAttrName\'>${attr}</span><span class=\'tagEqSign\'>=</span><span class=\'tagValueQuote\'>&quot;</span><span class='tagAttrValue'>${value}</span><span class=\'tagValueQuote\'>&quot;</span>`
+                                    attrLength += attr.length + value.length
+                                } else {
+                                    tag += ` <span class=\'tagAttrName\'>${attr}`
+                                    attrLength += attr.length
+                                }
+                            }
+                        } else {
+                            console.log('undefined?: ')
+                            console.log(node)
+                            console.log('-')
+                        }
+                        tag += `<span class='tagChar'>${node.childNodes.length<1 ? ' /':''}&gt;</span>`
+
+                        return tag
+                    }
+
+                    function formatClosingTag(node) {
+                        let tag = `<span class='tagChar'>&lt;/</span><span class='tagName'>${node.nodeName}</span><span class='tagChar'>&gt;</span>`
+                        return tag
+                    }
+
+                    function digMath(node, level) {
+                        if(node.nodeType===8) {
+                            formattedMml += `<span class='mathMlComment'>&lt;--${node.textContent}--&gt;</span>`
+                        } else if(node.nodeType===3) {
+                            formattedMml += `<br>${' '.repeat(level*2)}<span class='tagText'>${node.data}</span>`
+                        } else if(node.childNodes.length===1 && node.firstChild.nodeType===3){
+                            formattedMml += `<br>${' '.repeat(level*2)}${formatTag(node)}<span class='tagText'>${node.firstChild.data}</span>${formatClosingTag(node)}`
+                        } else if(node.childNodes.length===2 && node.childNodes[0].nodeType===3 && node.childNodes[1].nodeType===8){
+                            formattedMml += `<br>${' '.repeat(level*2)}${formatTag(node)}<span class='tagText'>${node.childNodes[0].data}</span><span class='mathMlComment'>&lt;--${node.childNodes[1].textContent}--&gt;</span>${formatClosingTag(node)}`
+                        } else if(node.childNodes.length===3 && node.childNodes[0].nodeType===3 && node.childNodes[1].nodeType===8 && node.childNodes[2].nodeType===3){
+                            formattedMml += `<br>${' '.repeat(level*2)}${formatTag(node)}<span class='tagText'>${node.childNodes[0].data}</span><span class='mathMlComment'>&lt;--${node.childNodes[1].textContent}--&gt;</span><span class='tagText'>${node.childNodes[2].data}</span>${formatClosingTag(node)}`
+                        } else if(node.childNodes.length>0) {
+                            formattedMml += `<br>${' '.repeat(level*2)}${formatTag(node)}`
+                            node.childNodes.forEach((node2) => {
+                                digMath(node2, level+1)
+                            })
+                        formattedMml += `<br>${' '.repeat(level*2)}${formatClosingTag(node)}`
+                        } else {
+                            formattedMml += `<br>${' '.repeat(level*2)}${formatTag(node)}`
+                        }
+                    }
+
+                    formattedMml += formatTag(root)
+
+                    root.childNodes.forEach((n) => {
+                        digMath(n, 1)
+                    })
+
+                    formattedMml += `<br>${formatClosingTag(root)}</code></pre>`
+
+                    return formattedMml
+                }
+
+                const copyInnerText = (id) => {
+                    const el = document.getElementById(id)
+                    if(el) {
+                        navigator.clipboard.writeText(el.innerText);
+                    }
+                }
+
+                window.onload = ()=>{
+                    const report=document.getElementById('report')
+                    math.forEach((m,i) => {
+                        let exampleContainer = createElement('div', null, {class:'exampleContainer'})
+                        report.appendChild(exampleContainer)
+
+                        const a = createElement('a',null,{name:`ex${i+1}`, id:`ex${i+1}`})
+                        exampleContainer.appendChild(a)
+                        let h3 = createElement('h3',`Example ${i+1}${(m.sreBraille==m.mathCatBraille)?'': /^\s*ERROR\s*$/.test(m.mathCatBraille) ? ' (Error)' : ' (braille differs)'}`,{class:'example', id:`h_ex${i+1}`})
+                        exampleContainer.appendChild(h3)
+                        let resultContainer = createElement('div', null, {class:'resultContainer'})
+                        exampleContainer.appendChild(resultContainer)
+
+                        let outerRenderedMathContainer = createElement('div', null, {class:'outerRenderedMathContainer'})
+                        resultContainer.appendChild(outerRenderedMathContainer)
+                        let h4 = createElement('h4','Rendered Math',{class:'renderedMath'})
+                        outerRenderedMathContainer.appendChild(h4)
+                        let renderedMathContainer = createElement('div', null, {class:'renderedMathContainer'})
+                        outerRenderedMathContainer.appendChild(renderedMathContainer)
+                        renderedMathContainer.innerHTML = m.mathML
+
+                        let speechTextAndBrailleContainer = createElement('div', null, {class: 'speechTextAndBrailleContainer'})
+                        outerRenderedMathContainer.appendChild(speechTextAndBrailleContainer)
+
+                        h4 = createElement('h4','MathSpeak',{class:'mathSpeak'})
+                        speechTextAndBrailleContainer.appendChild(h4)
+                        let p = createElement('p', m.mathSpeak, {class:'mathSpeak'})
+                        speechTextAndBrailleContainer.appendChild(p)
+
+                        h4 = createElement('h4','ClearSpeak',{class:'clearSpeak'})
+                        speechTextAndBrailleContainer.appendChild(h4)
+                        p = createElement('p', m.clearSpeak, {class:'clearSpeak'})
+                        speechTextAndBrailleContainer.appendChild(p)
+
+                        h4 = createElement('h4','SRE Braille',{class:'sreBraille'})
+                        speechTextAndBrailleContainer.appendChild(h4)
+                        p = createElement('p', m.sreBraille, {class:'sreBraille braille'})
+                        speechTextAndBrailleContainer.appendChild(p)
+
+                        h4 = createElement('h4','mathCAT Braille',{class:'mathCatBraille'})
+                        speechTextAndBrailleContainer.appendChild(h4)
+                        p = createElement('p', m.mathCatBraille, {class:'mathCatBraille braille'})
+                        speechTextAndBrailleContainer.appendChild(p)
+
+                        let copyBut = createElement('button', `Copy Source MathML for Example ${i+1}`, {class:'copySrc'})
+                        copyBut.addEventListener('click', e => copyInnerText(`src${i+1}`))
+                        speechTextAndBrailleContainer.appendChild(copyBut)
+
+                        let outerMathSrcContainer = createElement('div', null, {class:'outerMathSrcContainer'})
+                        resultContainer.appendChild(outerMathSrcContainer)
+                        h4 = createElement('h4','Math Source',{class:'mathSrc'})
+                        outerMathSrcContainer.appendChild(h4)
+                        let mathSrcContainer = createElement('div', null, {class: 'mathSrcContainer', id:`src${i+1}`})
+                        outerMathSrcContainer.appendChild(mathSrcContainer)
+                        mathSrcContainer.innerHTML = formatMathML(m.mathML)
+
+                    })
+                    document.getElementById('loadMathJax').addEventListener('click', installMathJax)
+                    window.setTimeout(()=>{try{document.getElementById(location.hash.substring(1))?.focus()}catch(e){}},2)
+                    window.setTimeout(()=>{try{document.getElementById(location.hash.substring(1))?.scrollIntoView()}catch(e){}},5)
+                }
+
+            })()
+
+        </script>
+    </head>
+    <body>
+        <header>
+            <h1>Braille and Math Speech Tests 0001b (revised by removing named entities) with MathCAT 0.1.23</h1>
+        </header>
+        <aside aria-describedby="vc">
+            <fieldset>
+                <legend id="vc">View Controls:</legend>
+                <p>By default, this page includes just the MathML for the rendered versions of the math spamples. Use the Load MathJax Version 3 button below to install MathJax if desired.</p>
+                <button type="button" id="loadMathJax">Load MathJax Version 3</button><span role='alert' id="mjLoaded"></span>
+            </fieldset>
+        </aside>
+        <main>
+            <div id="report">
+
+            </div>
+        </main>
+    </body>
+</html>
